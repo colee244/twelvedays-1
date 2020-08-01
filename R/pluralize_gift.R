@@ -10,13 +10,11 @@
 #' @import purrr
 #'
 #' @export
-pluralize_gift <- function(gift){
 
+pluralize_gift <- function(gift){
   gift <- gift %>%
     paste("s",sep='')%>%
     str_replace("ys", "ies") %>%
     str_replace("ooses", "eese")
-
-return(gift)
-
+  return(gift)
 }
