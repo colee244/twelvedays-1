@@ -24,5 +24,5 @@ sing_day <- function(dataset, line, phrase_col){
     cat(sep = "\n")
   map2_chr(rev(twelve_days_words[2:line]), rev(phrases[2:line]),paste)%>%
     cat(sep = "\n")
-  glue(twelve_days_words[1], phrases[1])
+  cat(twelve_days_words[1], phrases[1])
 }
