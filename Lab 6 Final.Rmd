@@ -1,0 +1,29 @@
+---
+title: "Lab 6 Final"
+author: "Collette Lee"
+date: "8/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(twelvedays)
+```
+```{r}
+xmas2 <- read.csv("https://www.dropbox.com/s/ap2hqssese1ki4j/xmas_2.csv?dl=1")
+```
+```{r}
+xmas2 <- xmas2 %>%
+  mutate(Full.Phrase = make_phrase(
+            num = "", 
+            num_word = "", 
+            item = pluralize_gift(Gift.Item), 
+            verb = Verb, 
+            adjective = Adjective, 
+            location = Location))
+
+sing_day(xmas2,12,Full.Phrase)
+```
+

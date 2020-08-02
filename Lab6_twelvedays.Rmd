@@ -1,0 +1,91 @@
+---
+title: "Lab 6 12 Days"
+author: "Collette Lee"
+date: "7/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r libraries}
+library(dplyr)
+library(stringr)
+library(glue)
+library(purrr)
+```
+```{r data}
+xmas <- read.csv("https://www.dropbox.com/s/e584pryn8evm1gz/xmas.csv?dl=1")
+xmas2 <- read.csv("https://www.dropbox.com/s/ap2hqssese1ki4j/xmas_2.csv?dl=1")
+```
+
+```{r pluralize_gift}
+pluralize_gift <- function(gift){
+gift <- gift %>%
+        paste("s",sep='')%>%
+        str_replace("ys", "ies") %>%
+        str_replace("ooses", "eese")
+return(gift)
+}
+
+pluralize_gift(xmas$Gift.Item)
+purrr::map_chr(xmas$Gift.Item, pluralize_gift)
+```
+
+```{r make_phrase}
+make_phrase <- function(num, num_word, item, verb, adjective, location){
+  num <- str_replace_na(num, "")
+  num_word <- str_replace_na(num_word, "")
+  verb <- str_replace_na(verb, "")
+  adjective <- str_replace_na(adjective, "")
+  location <- str_replace_na(location, "")
+  phrase <- glue("{num_word} {adjective} {item} {verb} {location}")
+  phrase <- gsub("\\s+", " ", phrase)
+  return(phrase)
+  }
+
+xmas <- xmas %>%
+  mutate(Full.Phrase = make_phrase(
+            num = "", 
+            num_word = "", 
+            item = pluralize_gift(Gift.Item), 
+            verb = Verb, 
+            adjective = Adjective, 
+            location = Location))
+
+make_phrase(num = 10, 
+            num_word = "ten", 
+            item = "lords", 
+            verb = "a-leaping", 
+            adjective = "", 
+            location = "")
+```
+
+```{r sing_day}
+sing_day <- function(dataset, line, phrase_col){
+  phrases <- dataset %>% pull({{phrase_col}})
+  last_day <- phrases[1]
+  day_number <- dataset$Day.in.Words[line]
+  twelve_days_words <- c("and a", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve")
+  glue("On the {day_number} day of Christmas, my true love sent to me,") %>%
+  cat(sep = "\n")
+  map2_chr(rev(twelve_days_words[2:line]), rev(phrases[2:line]),paste)%>%
+  cat(sep = "\n")
+  cat(twelve_days_words[1], phrases[1])
+}
+
+sing_day(xmas,12,Full.Phrase)
+```
+
+```{r}
+xmas2 <- xmas2 %>%
+  mutate(Full.Phrase = make_phrase(
+            num = "", 
+            num_word = "", 
+            item = pluralize_gift(Gift.Item), 
+            verb = Verb, 
+            adjective = Adjective, 
+            location = Location))
+
+sing_day(xmas2,12,Full.Phrase)
+```

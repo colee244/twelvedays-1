@@ -25,5 +25,6 @@ make_phrase <- function(num, num_word, item, verb, adjective, location){
   adjective <- str_replace_na(adjective, "")
   location <- str_replace_na(location, "")
   phrase <- glue("{num_word} {adjective} {item} {verb} {location}")
+  phrase <- gsub("\\s+", " ", phrase)
   return(phrase)
 }
